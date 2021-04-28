@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(value = "/exemplo")
+@RequestMapping(value = "/character")
 public class CharacterController extends BaseController {
     private final CharacterService service;
 
@@ -31,11 +31,11 @@ public class CharacterController extends BaseController {
         this.modelMapper = modelMapper;
     }
 
-    @ApiOperation(value = "Buscar exemplo por ID", nickname = "getExemploById", notes = "Returns a single Exemplo", response = CharacterResponse.class)
+    @ApiOperation(value = "Buscar character por Id", nickname = "getCharacterById", notes = "Returns a single character", response = CharacterResponse.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "successful operation", response = CharacterResponse.class),
             @ApiResponse(code = 400, message = "Bad Request"),
-            @ApiResponse(code = 404, message = "Exemplo not found")})
+            @ApiResponse(code = 404, message = "character not found")})
 
     @GetMapping(value = "/{id}")
     @ResponseBody
@@ -47,7 +47,7 @@ public class CharacterController extends BaseController {
     }
 
 
-    @ApiOperation(value = "Criar novo exemplo", nickname = "addExemplo", notes = "Criar exemplo")
+    @ApiOperation(value = "Criar novo character", nickname = "addCharacter", notes = "Criar character")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Created"),
             @ApiResponse(code = 400, message = "Bad Request")})
@@ -62,35 +62,35 @@ public class CharacterController extends BaseController {
     }
 
 
-    @ApiOperation(value = "Atualizar ExampleModel existente ", nickname = "updateExampleModel", notes = "Atualiza ExampleModel", response = CharacterResponse.class)
+    @ApiOperation(value = "Atualizar character existente ", nickname = "updateCharacterModel", notes = "Atualiza character", response = CharacterResponse.class)
     @ApiResponses(value = {
             @ApiResponse(code = 204, message = "successful operation", response = CharacterResponse.class),
             @ApiResponse(code = 400, message = "Bad Request"),
-            @ApiResponse(code = 404, message = "ExampleModel not found")})
+            @ApiResponse(code = 404, message = "character not found")})
 
-    @PutMapping(value = "/{id}")
+    @PutMapping(value = "/{characterId}")
     @ResponseBody
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@PathVariable(name = "id") Long id, @RequestBody CharacterRequest request) {
+    public void update(@PathVariable(name = "characterId") Long id, @RequestBody CharacterRequest request) {
         Character data = modelMapper.map(request, Character.class);
         service.update(id, data);
     }
 
 
-    @ApiOperation(value = "Deletar ExampleModel existente ", nickname = "deleteExampleModel", notes = "deleta ExampleModel", response = CharacterResponse.class)
+    @ApiOperation(value = "Deletar character existente ", nickname = "deleteCharacterModel", notes = "deleta character", response = CharacterResponse.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "successful operation", response = CharacterResponse.class),
             @ApiResponse(code = 400, message = "Bad Request"),
-            @ApiResponse(code = 404, message = "ExampleModel not found")})
+            @ApiResponse(code = 404, message = "character not found")})
 
     @DeleteMapping(value = "/{id}")
     @ResponseBody
-    public void delete(@PathVariable(name = "id") Long id) {
+    public void delete(@PathVariable(name = "characterId") Long id) {
         service.delete(id);
     }
 
 
-    @ApiOperation(value = "Buscar ExampleModels", nickname = "findAll", notes = "Multiple search parasm can be provided", response = Character.class, responseContainer = "List")
+    @ApiOperation(value = "Buscar character", nickname = "findAll", notes = "Multiple search parasm can be provided", response = Character.class, responseContainer = "List")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "successful operation", response = Character.class, responseContainer = "List"),
             @ApiResponse(code = 400, message = "Bad Request")})
