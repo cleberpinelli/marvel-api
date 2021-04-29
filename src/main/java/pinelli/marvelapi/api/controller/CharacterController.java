@@ -1,5 +1,6 @@
 package pinelli.marvelapi.api.controller;
 
+import com.querydsl.core.types.Predicate;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -7,6 +8,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -90,19 +92,32 @@ public class CharacterController extends BaseController {
     }
 
 
-    @ApiOperation(value = "Buscar character", nickname = "findAll", notes = "Multiple search parasm can be provided", response = Character.class, responseContainer = "List")
+    @ApiOperation(value = "Buscar characters", nickname = "findAll", notes = "Multiple search parasm can be provided", response = Character.class, responseContainer = "List")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "successful operation", response = Character.class, responseContainer = "List"),
             @ApiResponse(code = 400, message = "Bad Request")})
-
     @GetMapping
     @ResponseBody
-    public ResponseEntity<?> findAll(Pageable pageable) {
-        Page<Character> exampleModelPage = service.findAll(pageable);
-        List<CharacterResponse> content = exampleModelPage.stream()
+    public ResponseEntity<?> findAllCharacters(@QuerydslPredicate(root = Character.class) Predicate predicate, Pageable pageable) {
+        Page<Character> characterPage = service.findAll(predicate, pageable);
+        List<CharacterResponse> content = characterPage.stream()
                 .map(item -> modelMapper.map(item, CharacterResponse.class))
                 .collect(Collectors.toList());
-        Page<CharacterResponse> exampleModelResponses = new PageImpl<>(content, pageable, exampleModelPage.getTotalElements());
-        return respondOk(exampleModelResponses);
+
+        PageImpl<CharacterResponse> characterResponses = new PageImpl<>(content, pageable, characterPage.getTotalElements());
+        return respondOk(characterResponses);
     }
+
+
+
+//    @GetMapping
+//    @ResponseBody
+//    public ResponseEntity<?> findAll(Pageable pageable) {
+//        Page<Character> exampleModelPage = service.findAll(pageable);
+//        List<CharacterResponse> content = exampleModelPage.stream()
+//                .map(item -> modelMapper.map(item, CharacterResponse.class))
+//                .collect(Collectors.toList());
+//        Page<CharacterResponse> exampleModelResponses = new PageImpl<>(content, pageable, exampleModelPage.getTotalElements());
+//        return respondOk(exampleModelResponses);
+//    }
 }

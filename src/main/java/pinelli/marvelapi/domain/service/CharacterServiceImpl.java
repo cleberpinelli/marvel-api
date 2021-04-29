@@ -1,5 +1,6 @@
 package pinelli.marvelapi.domain.service;
 
+import com.querydsl.core.types.Predicate;
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -30,6 +31,11 @@ public class CharacterServiceImpl implements CharacterService {
     @Override
     public Page<Character> findAll(Pageable pageable) {
         return repository.findAll(pageable);
+    }
+
+    @Override
+    public Page<Character> findAll(Predicate predicate, Pageable pageable) {
+        return repository.findAll(predicate, pageable);
     }
 
     @Override
