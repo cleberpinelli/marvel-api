@@ -32,25 +32,25 @@ public class Character extends BaseModel{
     @JoinColumn(name = "ID_IMAGE", foreignKey = @ForeignKey(name = "CH_IMG_FK"))
     private Image thumbnail;
 
-    @OneToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "T_CHARACTER_COMICS",
             joinColumns = @JoinColumn(name = "ID_CHARACTER", foreignKey = @ForeignKey(name = "CHCM_CH_FK")),
             inverseJoinColumns = @JoinColumn(name = "ID_COMICS", foreignKey = @ForeignKey(name = "CHCM_CM_FK")))
     List<Comics> comicsList;
 
-    @OneToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "T_CHARACTER_STORY",
             joinColumns = @JoinColumn(name = "ID_CHARACTER", foreignKey = @ForeignKey(name = "CHST_CH_FK")),
             inverseJoinColumns = @JoinColumn(name = "ID_STORY", foreignKey = @ForeignKey(name = "CHST_ST_FK")))
     List<Story> storyList;
 
-    @OneToMany
+    @ManyToMany
     @JoinTable(name = "T_CHARACTER_EVENT",
             joinColumns = @JoinColumn(name = "ID_CHARACTER", foreignKey = @ForeignKey(name = "CHEV_CH_FK")),
             inverseJoinColumns = @JoinColumn(name = "ID_EVENT", foreignKey = @ForeignKey(name = "CHEV_EV_FK")))
     List<Event> eventList;
 
-    @OneToMany
+    @ManyToMany
     @JoinTable(name = "T_CHARACTER_SERIE",
             joinColumns = @JoinColumn(name = "ID_CHARACTER", foreignKey = @ForeignKey(name = "CHSE_CH_FK")),
             inverseJoinColumns = @JoinColumn(name = "ID_SERIE", foreignKey = @ForeignKey(name = "CHSE_SE_FK")))

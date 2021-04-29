@@ -10,12 +10,14 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CharacterRequest {
+public class StoryRequest {
+    @Schema(description = "resourceURI")
+    private String resourceURI;
 
     @Schema(description = "Name")
-    private String name;
+    private String title;
 
-    @Schema(description = "Description")
-    private String description;
+    @Schema(description = "Type")
+    private String type;
 
 }

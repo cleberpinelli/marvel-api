@@ -1,10 +1,14 @@
 package pinelli.marvelapi.api.controller;
 
 import com.querydsl.core.types.Predicate;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.modelmapper.ModelMapper;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pinelli.marvelapi.api.http.resources.request.CharacterRequest;
 import pinelli.marvelapi.api.http.resources.response.CharacterResponse;
+import pinelli.marvelapi.api.http.wrapper.DataWrapper;
 import pinelli.marvelapi.domain.model.Character;
 import pinelli.marvelapi.domain.service.CharacterService;
 
@@ -33,12 +38,7 @@ public class CharacterController extends BaseController {
         this.modelMapper = modelMapper;
     }
 
-    @ApiOperation(value = "Buscar character por Id", nickname = "getCharacterById", notes = "Returns a single character", response = CharacterResponse.class)
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "successful operation", response = CharacterResponse.class),
-            @ApiResponse(code = 400, message = "Bad Request"),
-            @ApiResponse(code = 404, message = "character not found")})
-
+    @Operation(operationId = "findOne",summary = "Find character by Id",tags={"character"})
     @GetMapping(value = "/{id}")
     @ResponseBody
     public ResponseEntity<?> findById(@PathVariable(name = "id") Long id) {
@@ -49,11 +49,7 @@ public class CharacterController extends BaseController {
     }
 
 
-    @ApiOperation(value = "Criar novo character", nickname = "addCharacter", notes = "Criar character")
-    @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Created"),
-            @ApiResponse(code = 400, message = "Bad Request")})
-
+    @Operation(operationId = "create",summary = "Create character",tags={"character"})
     @PostMapping
     @ResponseBody
     public ResponseEntity<?> create(@RequestBody @Valid CharacterRequest exampleModelRequest) {
@@ -64,12 +60,7 @@ public class CharacterController extends BaseController {
     }
 
 
-    @ApiOperation(value = "Atualizar character existente ", nickname = "updateCharacterModel", notes = "Atualiza character", response = CharacterResponse.class)
-    @ApiResponses(value = {
-            @ApiResponse(code = 204, message = "successful operation", response = CharacterResponse.class),
-            @ApiResponse(code = 400, message = "Bad Request"),
-            @ApiResponse(code = 404, message = "character not found")})
-
+    @Operation(operationId = "update",summary = "Update character",tags={"character"})
     @PutMapping(value = "/{characterId}")
     @ResponseBody
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -79,12 +70,7 @@ public class CharacterController extends BaseController {
     }
 
 
-    @ApiOperation(value = "Deletar character existente ", nickname = "deleteCharacterModel", notes = "deleta character", response = CharacterResponse.class)
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "successful operation", response = CharacterResponse.class),
-            @ApiResponse(code = 400, message = "Bad Request"),
-            @ApiResponse(code = 404, message = "character not found")})
-
+    @Operation(operationId = "delete",summary = "Delete character",tags={"character"})
     @DeleteMapping(value = "/{id}")
     @ResponseBody
     public void delete(@PathVariable(name = "characterId") Long id) {
@@ -92,32 +78,23 @@ public class CharacterController extends BaseController {
     }
 
 
-    @ApiOperation(value = "Buscar characters", nickname = "findAll", notes = "Multiple search parasm can be provided", response = Character.class, responseContainer = "List")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "successful operation", response = Character.class, responseContainer = "List"),
-            @ApiResponse(code = 400, message = "Bad Request")})
+    @Operation(operationId = "findall",summary = "Findall characters",tags={"character"})
     @GetMapping
     @ResponseBody
-    public ResponseEntity<?> findAllCharacters(@QuerydslPredicate(root = Character.class) Predicate predicate, Pageable pageable) {
+    public ResponseEntity<?> findAllCharacters(@QuerydslPredicate(root = Character.class) @Parameter(hidden = true) Predicate predicate,  @ParameterObject Pageable pageable) {
         Page<Character> characterPage = service.findAll(predicate, pageable);
         List<CharacterResponse> content = characterPage.stream()
                 .map(item -> modelMapper.map(item, CharacterResponse.class))
                 .collect(Collectors.toList());
 
         PageImpl<CharacterResponse> characterResponses = new PageImpl<>(content, pageable, characterPage.getTotalElements());
-        return respondOk(characterResponses);
+        DataWrapper dataWrapper = DataWrapper.builder().data(characterResponses)
+                .code(200).status("Ok")
+                .copyright("© 2021 MARVEL")
+                .attributionText("Data provided by Marvel. © 2021 MARVEL")
+                .attributionHTML("<a href=\"http://marvel.com\">Data provided by Marvel. © 2021 MARVEL</a>")
+                .etag("28de51bd80a7091fe67288eb4c6b949ec7aa6491").build();
+        return respondOk(dataWrapper);
     }
 
-
-
-//    @GetMapping
-//    @ResponseBody
-//    public ResponseEntity<?> findAll(Pageable pageable) {
-//        Page<Character> exampleModelPage = service.findAll(pageable);
-//        List<CharacterResponse> content = exampleModelPage.stream()
-//                .map(item -> modelMapper.map(item, CharacterResponse.class))
-//                .collect(Collectors.toList());
-//        Page<CharacterResponse> exampleModelResponses = new PageImpl<>(content, pageable, exampleModelPage.getTotalElements());
-//        return respondOk(exampleModelResponses);
-//    }
 }
