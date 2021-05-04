@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pinelli.marvelapi.api.http.resources.request.CharacterRequest;
 import pinelli.marvelapi.api.http.resources.response.CharacterResponse;
 import pinelli.marvelapi.api.http.resources.response.StoryResponse;
 import pinelli.marvelapi.api.http.wrapper.DataWrapper;
@@ -19,6 +20,7 @@ import pinelli.marvelapi.domain.model.Story;
 import pinelli.marvelapi.domain.service.CharacterService;
 import pinelli.marvelapi.domain.service.StoryService;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -48,40 +50,39 @@ public class CharacterController extends BaseController {
     }
 
 
-//    @Operation(operationId = "create",summary = "Create character",tags={"character"})
-//    @PostMapping
-//    @ResponseBody
-//    public ResponseEntity<?> create(@RequestBody @Valid CharacterRequest characterRequest) {
-//        Character request = modelMapper.map(characterRequest, Character.class);
-//        Character created = service.create(request);
-//        CharacterResponse response = modelMapper.map(created, CharacterResponse.class);
-//        return respondCreated(response);
-//    }
+    @Operation(operationId = "create",summary = "Create character",tags={"character"})
+    @PostMapping
+    @ResponseBody
+    public ResponseEntity<?> create(@RequestBody @Valid CharacterRequest characterRequest) {
+        Character request = modelMapper.map(characterRequest, Character.class);
+        Character created = characterService.create(request);
+        CharacterResponse response = modelMapper.map(created, CharacterResponse.class);
+        return respondCreated(response);
+    }
 
 
-//    @Operation(operationId = "update",summary = "Update character",tags={"character"})
-//    @PutMapping(value = "/{characterId}")
-//    @ResponseBody
-//    @ResponseStatus(HttpStatus.NO_CONTENT)
-//    public void update(@PathVariable(name = "characterId") Long id, @RequestBody CharacterRequest request) {
-//        Character data = modelMapper.map(request, Character.class);
-//        service.update(id, data);
-//    }
+    @Operation(operationId = "update",summary = "Update character",tags={"character"})
+    @PutMapping(value = "/{characterId}")
+    @ResponseBody
+    public void update(@PathVariable(name = "characterId") Long id, @RequestBody CharacterRequest request) {
+        Character data = modelMapper.map(request, Character.class);
+        characterService.update(id, data);
+    }
 
 
-//    @Operation(operationId = "delete",summary = "Delete character",tags={"character"})
-//    @DeleteMapping(value = "/{characterId}")
-//    @ResponseBody
-//    public void delete(@PathVariable(name = "characterId") Long id) {
-//        service.delete(id);
-//    }
+    @Operation(operationId = "delete",summary = "Delete character",tags={"character"})
+    @DeleteMapping(value = "/{characterId}")
+    @ResponseBody
+    public void delete(@PathVariable(name = "characterId") Long id) {
+        characterService.delete(id);
+    }
 
-//    @Operation(operationId = "delete",summary = "Delete character",tags={"character"})
-//    @GetMapping(value = "/teste")
-//    @ResponseBody
-//    public void delete(@RequestParam Map<String,List<Long>> allParams) {
-//        respondOk(allParams.entrySet());
-//    }
+    @Operation(operationId = "delete",summary = "Delete character",tags={"character"})
+    @GetMapping(value = "/teste")
+    @ResponseBody
+    public void delete(@RequestParam Map<String,List<Long>> allParams) {
+        respondOk(allParams.entrySet());
+    }
 
 
     @Operation(operationId = "findall",summary = "Findall characters",tags={"character"})
